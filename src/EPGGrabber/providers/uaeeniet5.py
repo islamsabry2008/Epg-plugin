@@ -22,23 +22,23 @@ except ImportError:
     from __init__ import EPG_ROOT, PROVIDERS_ROOT
 
 # Paths
-path = os.path.join(EPG_ROOT, 'arabiapremiumar.xml')
+path = os.path.join(EPG_ROOT, 'uaepremium3.xml')
 path_1 = os.path.join(EPG_ROOT, 'out.xml')
 
 def main():
-    print("*****************Sport_iet5 EPG******************")
+    print("*****************UAE_iet5_EN EPG******************")
     sys.stdout.flush()
-    print("Downloading Sport_iet5 EPG guide\nPlease wait....")
+    print("Downloading UAE_IET5_EN EPG guide\nPlease wait....")
     sys.stdout.flush()
 
     try:
         # Download the XML file
-        response = requests.get('https://www.bevy.be/bevyfiles/arabiapremiumar.xml', verify=False)
+        response = requests.get('https://www.bevy.be/bevyfiles/uaepremium3.xml', verify=False)
         if response.status_code == 200:
             with io.open(path, 'w', encoding="utf-8") as f:
                 f.write(response.text)
             print("##########################################")
-            print("arabiapremiumar.xml Downloaded Successfully")
+            print("uaepremium3.xml Downloaded Successfully")
             print("##########################################")
 
             # Adjust times in the XML
@@ -48,17 +48,18 @@ def main():
             # Rename the file
             rename_file()
 
-            # Change arabiapremiumar.xml format to elcinema format
-            Change_arabiapremiumar_to_elcinema()
+            # Change uaepremium3.xml format to elcinema format
+            Change_arabia_to_elcinema()
+
             # Update providers JSON
             update_providers()
 
             print('**************FINISHED******************')
             sys.stdout.flush()
         else:
-            print("Failed to download /arabiapremiumar.xml. Status code: {}".format(response.status_code))
+            print("Failed to download /uaepremium3.xml. Status code: {}".format(response.status_code))
     except requests.exceptions.RequestException as e:
-        print("Failed to download /arabiapremiumar.xml: {}".format(e))
+        print("Failed to download /uaepremium3.xml: {}".format(e))
 
     # Remove specific lines
     remove_specific_lines()
@@ -95,10 +96,10 @@ def remove_duplicates():
 def rename_file():
     os.remove(path)
     os.rename(path_1, path)
-    print("Cool .... congratulations your arabiapremiumar.xml file is created - successfully done")
+    print("Cool .... congratulations your uaepremium3.xml file is created - successfully done")
     print("############################################################")
     print("The time is set to +0300, and if your time is different,")
-    print("you can modify the sportiet5.py file in the following")
+    print("you can modify the uaeeniet5.py file in the following")
     print("path /usr/lib/enigma2/python/Plugins/Extensions/EPGGrabber/")
     print("providers/")
     print("############################################################")
@@ -107,7 +108,7 @@ def update_providers():
     with open(PROVIDERS_ROOT, 'r') as f:
         data = json.load(f)
         for channel in data['bouquets']:
-            if channel["bouquet"] == "sportiet5":
+            if channel["bouquet"] == "uaeeniet5":
                 channel['date'] = datetime.today().strftime('%A %d %B %Y at %I:%M %p')
     with open(PROVIDERS_ROOT, 'w') as f:
         json.dump(data, f, indent=4)
@@ -127,7 +128,7 @@ def ChangeDataList(Mege, Megerep, fil):
             line = line.replace(Mege, Megerep)
         sys.stdout.write(line)
 
-def Change_arabiapremiumar_to_elcinema():
+def Change_arabia_to_elcinema():
     List_Chang = [('<channel', '  <channel'), ('<display-name>', '\n    <display-name lang="ar">'), ('<url>', '\n    <url>'), ('</channel>', '\n  </channel>'),
                   ('<programme', '  <programme'), ('<title', '\n    <title'), ('<desc', '\n    <desc'), ('</programme>', '\n  </programme>'), ('<icon', '\n    <icon'),
                   ('<category', '\n    <category')]
